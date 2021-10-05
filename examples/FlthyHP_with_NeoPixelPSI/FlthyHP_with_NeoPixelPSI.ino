@@ -627,6 +627,9 @@ void setup() {
   else
     Serial.println(F("Disabled\n"));
 
+  rpsi.set_color(1, 0, 255, 0);	// Set the rear PSI colours
+  rpsi.set_color(2, 128, 128, 128);  // Without this it does the standard front colours
+
 }
 
 //////////////////////////////////////////////////////////////////////
