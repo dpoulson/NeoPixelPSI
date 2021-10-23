@@ -80,6 +80,7 @@ class NeoPixelPSI
           }
           break;
       }
+      grid_size = psi_size;
       leds.begin();
       leds.setBrightness(brightness);
     }
