@@ -1,17 +1,12 @@
-//#include <FastLED.h>
+#ifndef NeoPixelPSI_h
+#define NeoPixelPSI_h
+
+#include "Arduino.h"
 #include <Adafruit_NeoPixel.h>
 #define USE_DEBUG
-///////////////////////////////////////////////////////////////////////////////////////////
-//
-// Move a white dot along the strip of leds.  This program simply shows how to configure the leds,
-// and then how to turn a single pixel white and then off, moving down the line of pixels.
-// 
-
-// How many leds are in the strip?
-#define NUM_LEDS 21
 
 #define SWIPE_SPEED 75 
-#define SWIPE_DELAY 500 
+#define SWIPE_DELAY 2000 
 #define STICKINESS 0
 #define BRIGHTNESS 28
 
@@ -37,9 +32,26 @@ class NeoPixelPSI
         kMalf = 3,
     };
 
-    NeoPixelPSI(int psi_pin) :
-      leds(NUM_LEDS, psi_pin, NEO_GRB + NEO_KHZ800)
+    NeoPixelPSI(int psi_pin, int psi_size = 5)
     {
+      leds.updateLength(num_leds[psi_size]);
+      leds.updateType(NEO_GRB + NEO_KHZ800);
+      leds.setPin(psi_pin);
+      switch (psi_size) {
+        case 8:
+          memcpy(LEDmap, LEDmap8, sizeof(LEDmap8));
+          break;
+        case 7:
+          for(int x = 0; x < psi_size ; x++ ){
+            memcpy(LEDmap[x], LEDmap7[x], sizeof(LEDmap7[x]));
+          }
+          break;
+        case 5:
+          for(int x = 0; x < psi_size ; x++ ){
+            memcpy(LEDmap[x], LEDmap5[x], sizeof(LEDmap5[x]));
+          }
+          break;
+      }
       leds.begin();
       leds.setBrightness(brightness);
     }
@@ -50,10 +62,9 @@ class NeoPixelPSI
       {
         swipe_main(swipe_position);
         if (swipe_direction == 0) {
-          if (swipe_position > 3) {
+          if (swipe_position >= grid_size-1) {
              swipe_direction = 1;
              fSwipeSpeed = currentMillis + random(sdelay, sdelay*4);
-             //swipe_position--;
           } else {
              fSwipeSpeed = currentMillis + sspeed;
              swipe_position++;
@@ -62,7 +73,6 @@ class NeoPixelPSI
           if (swipe_position <= 0) {
              swipe_direction = 0;
              fSwipeSpeed = currentMillis + random(sdelay, sdelay*4);
-             //swipe_position++;
           } else {
              fSwipeSpeed = currentMillis + sspeed;
              swipe_position--;
@@ -98,30 +108,53 @@ class NeoPixelPSI
     }
 
   private:
-    int fPSI = 0;
     int swipe_direction = 0;
     int swipe_position = 0;
     int sspeed = SWIPE_SPEED;
     int sdelay = SWIPE_DELAY;
     int brightness = BRIGHTNESS;
+    int grid_size = 5;
+    int num_leds[9] = {0, 0, 0, 0, 0, 21, 0, 37, 52};
     uint32_t color_one = leds.Color(255,0,0);
     uint32_t color_two = leds.Color(0,0, 255);
     unsigned long fSwipeSpeed;
     unsigned long fSwipeMillis; 
+    int LEDmap[8][8];
     
-    int LEDmap[5][5]  = {
+    const int LEDmap5[5][5] PROGMEM = {
        {99, 0, 1, 2, 99 },
        {3, 4, 5, 6, 7},
        {8, 9, 10, 11, 12},
        {13, 14, 15, 16, 17},
        {99, 18, 19, 20, 99},
     };
+
+    const int LEDmap7[7][7] PROGMEM = {
+      {99, 99, 2, 1, 0, 99, 99},
+      {99, 7, 6, 5, 4, 3, 99},
+      {14, 13, 12, 11, 10, 9, 8},
+      {21, 20, 19, 18, 17, 16, 15},
+      {28, 27, 26, 25, 24, 23, 22},
+      {99, 33, 32, 31, 30, 29, 99 },
+      {99, 99, 36, 35, 34, 99, 99}
+    };
+
+    const int LEDmap8[8][8] PROGMEM = {
+      {99,99,3,2,1,0,99,99},
+      {99,9,8,7,6,5,4,99},
+      {17,16,15,14,13,12,11,10},
+      {25,24,23,22,21,20,19,18},
+      {33,32,31,30,29,28,27,26},
+      {41,40,39,38,37,36,35,34},
+      {99,47,46,45,44,43,42,99},
+      {99,99,51,50,49,48,99,99}
+    };
     
 
     void swipe_main(uint8_t pos)
     {
       uint32_t color;
-      for(int row = 0; row <= 4 ; row++) {
+      for(int row = 0; row <= grid_size-1 ; row++) {
         if(swipe_direction == 0)
             color = color_one;
         else
@@ -139,9 +172,9 @@ class NeoPixelPSI
         uint32_t color;
         for(int i=0;i<=cycles;i++) 
         {
-            for (int j = 0; j< 5; j++) 
+            for (int j = 0; j< grid_size; j++) 
             {
-                for (int k = 4; k >= 0; k--) 
+                for (int k = grid_size-1; k >= 0; k--) 
                 {
                     pixel = random(0,cycles);
                     if (pixel < cycles-i) 
@@ -155,6 +188,7 @@ class NeoPixelPSI
                         color = leds.Color(0,0,0);
                     }
                     int led = LEDmap[j][k];
+
                     leds.setPixelColor(LEDmap[j][k], color);
                 }
             }
@@ -192,27 +226,4 @@ class NeoPixelPSI
     }
 };
 
-NeoPixelPSI fpsi(3);
-NeoPixelPSI rpsi(4);
-
-unsigned long last_effect = 0;
-
-void setup() {
-     Serial.begin(115200);
-     rpsi.set_color(1, 0, 255, 0);
-     rpsi.set_color(2, 128, 128, 128);
-     rpsi.set_speed(50);
-     rpsi.set_delay(750);
-     rpsi.set_brightness(20);
-}
-
-void loop() {
-  fpsi.animate();
-  rpsi.animate();
-  if(last_effect + 10000 < millis()) {
-    Serial.print("Triggering effect: ");
-    Serial.println(last_effect);
-    fpsi.setSequence(1);
-    last_effect = millis();
-  }
-}
+#endif

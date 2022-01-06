@@ -123,7 +123,7 @@
 #include <Adafruit_NeoPixel.h>           // Source: https://github.com/adafruit/Adafruit_NeoPixel
 #include <Adafruit_PWMServoDriver.h>     // Source: https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library
 #include <Servos.h>                      // Source: https://drive.google.com/file/d/0B5B8A65frsBgZ3VpeGxpM1lzaFE/edit  Thanks BHD!
-#include "NeoPixelPSI.h"
+#include <NeoPixelPSI.h>
 
 #define VERSION 4
 #define HPCOUNT 3
@@ -569,8 +569,8 @@ Servos servos(SERVOI2CADDRESS);
 #define STATUSLEDPIN 13                    // The builtin LED on the Arduino mini is on pin 13
 
 
-NeoPixelPSI fpsi(1, 5);
-NeoPixelPSI rpsi(2, 6);
+NeoPixelPSI fpsi(1);
+NeoPixelPSI rpsi(2);
 
 
 ////////////////////////////////////////////////////////////
