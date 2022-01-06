@@ -14,6 +14,28 @@
  #define PSI_DEBUG
 #endif
 
+/**
+  * \ingroup Dome
+  *
+  * \class NeoPixelPSI
+  *
+  * \brief NeoPixelPSI by Darren Poulson <daz@r2djp.co.uk>
+  *
+  * NeoPixelPSI are very simple and cheap boards, in reality just a string of neopixels on a disk. This class
+  * will configure them to act as standard PSIs for R2.
+  *
+  * For more info:
+  *
+  * https://r2djp.co.uk/category/electronics/neopixel-psi/
+  *
+  * Example Code:
+  * \code
+  *  NeoPixelPSI rearPSI(4);
+  *  NeoPixelPSI frontPSI(3);
+  * \endcode
+  *
+  */
+
 class NeoPixelPSI 
 {
   public: 
@@ -32,6 +54,15 @@ class NeoPixelPSI
         kMalf = 3,
     };
 
+<<<<<<< HEAD:NeoPixelPSI.h
+=======
+   /**
+     * \brief Constructor
+     *
+     * Pass the pin number for the PSI and optionally the size of the PSI (for denser pixel counts)
+     */
+
+>>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6:standalone/NeoPixelPSI/NeoPixelPSI.ino
     NeoPixelPSI(int psi_pin, int psi_size = 5)
     {
       leds.updateLength(num_leds[psi_size]);
@@ -52,8 +83,20 @@ class NeoPixelPSI
           }
           break;
       }
+<<<<<<< HEAD:NeoPixelPSI.h
+=======
+      grid_size = psi_size;
+>>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6:standalone/NeoPixelPSI/NeoPixelPSI.ino
       leds.begin();
       leds.setBrightness(brightness);
+    }
+    
+    /**
+      * Select the specified effect sequence.
+      */
+    void setSequence(Sequence seq = kNormal, uint8_t speedScale = 0, uint8_t numSeconds = 0)
+    {
+        do_pulse(10, 50, 255, 0, 0);
     }
 
     virtual void animate() {
@@ -78,15 +121,35 @@ class NeoPixelPSI
              swipe_position--;
           }
         }
+	if (swipe_position == int((grid_size/2)+0.5)) {
+	     if (random(0,100) < stickiness) {
+		     fSwipeSpeed  = currentMillis + random(sdelay, sdelay*4);
+	     }
+	}
       }
-    }
+    } 
 
+    /**
+     * \brief Set the brightness of the PSI
+     *
+     * Send a value from 0-255 to set the brightness, the higher the number the brighter it is
+     *
+     * Don't set 255 straight away, these can be bright. Typical value is between 20-50
+     */
     void set_brightness(int bright) {
       brightness = bright;
       leds.setBrightness(brightness);
       leds.show();
     }
 
+    /**
+     * \brief set the colors of the PSI
+     *
+     * \li color number (1=first, 2=second)
+     * \li red
+     * \li green
+     * \li blue
+     */
     void set_color(int c, int r, int g, int b) {
       if (c == 1) 
         color_one = leds.Color(r,g,b);
@@ -94,18 +157,38 @@ class NeoPixelPSI
         color_two = leds.Color(r,g,b);
     }
 
+    /**
+     * \brief Set the speed the swipe effect moves at
+     *
+     * Lower the number, the faster the swipe. This is in ms
+     * Typical value is around 75
+     */
     void set_speed(int s)  {
       sspeed = s;
     }
 
+    /**
+     * \brief Set the delay between swipes
+     *
+     * Set how many ms between swipes. The actual value will be between <value> and <value>*4
+     */
     void set_delay(int d) {
       sdelay = d;
     }
 
-    void setSequence(Sequence seq = kNormal, uint8_t speedScale = 0, uint8_t numSeconds = 0)
-    {
-        do_pulse(10, 50, 255, 0, 0);
+    /**
+     * \brief Set the 'stickiness'
+     *
+     * To simulate the original PSI 'sticking' halfway through a swipe, you can set the percentage
+     * chance of the swipe halting for a period (as set in set_delay()).
+     *
+     * Default: 0
+     * Range: 0-100
+     */
+    void set_stickiness(int s) {
+      stickiness = s;
     }
+
 
   private:
     int swipe_direction = 0;
@@ -113,6 +196,10 @@ class NeoPixelPSI
     int sspeed = SWIPE_SPEED;
     int sdelay = SWIPE_DELAY;
     int brightness = BRIGHTNESS;
+<<<<<<< HEAD:NeoPixelPSI.h
+=======
+    int stickiness = STICKINESS;
+>>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6:standalone/NeoPixelPSI/NeoPixelPSI.ino
     int grid_size = 5;
     int num_leds[9] = {0, 0, 0, 0, 0, 21, 0, 37, 52};
     uint32_t color_one = leds.Color(255,0,0);

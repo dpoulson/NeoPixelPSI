@@ -3,5 +3,9 @@ set_brightness	KEYWORD2
 set_color	KEYWORD2
 set_speed	KEYWORD2
 set_delay	KEYWORD2
+<<<<<<< HEAD
+=======
+set_stickiness	KEYWORD2
+>>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6
 setSequence	KEYWORD2
 animate		KEYWORD2
