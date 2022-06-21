@@ -54,15 +54,12 @@ class NeoPixelPSI
         kMalf = 3,
     };
 
-<<<<<<< HEAD:NeoPixelPSI.h
-=======
    /**
      * \brief Constructor
      *
      * Pass the pin number for the PSI and optionally the size of the PSI (for denser pixel counts)
      */
 
->>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6:standalone/NeoPixelPSI/NeoPixelPSI.ino
     NeoPixelPSI(int psi_pin, int psi_size = 5)
     {
       leds.updateLength(num_leds[psi_size]);
@@ -83,10 +80,7 @@ class NeoPixelPSI
           }
           break;
       }
-<<<<<<< HEAD:NeoPixelPSI.h
-=======
       grid_size = psi_size;
->>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6:standalone/NeoPixelPSI/NeoPixelPSI.ino
       leds.begin();
       leds.setBrightness(brightness);
     }
@@ -196,10 +190,7 @@ class NeoPixelPSI
     int sspeed = SWIPE_SPEED;
     int sdelay = SWIPE_DELAY;
     int brightness = BRIGHTNESS;
-<<<<<<< HEAD:NeoPixelPSI.h
-=======
     int stickiness = STICKINESS;
->>>>>>> 7e65ab8a4e73dbfcad7205717f253af7dc3942a6:standalone/NeoPixelPSI/NeoPixelPSI.ino
     int grid_size = 5;
     int num_leds[9] = {0, 0, 0, 0, 0, 21, 0, 37, 52};
     uint32_t color_one = leds.Color(255,0,0);
